@@ -9,8 +9,7 @@ pytestmark = pytest.mark.docker_images(
     'infopen/ubuntu-xenial-ssh-py27:0.2.0'
 )
 
-def test_foo_a(User):
-    assert User().name == 'root'
-
-def test_foo_b(User):
-    assert User().name == 'root'
+def test_packages(Package):
+    assert Package('uwsgi').is_installed
+    assert Package('uwsgi-plugin-python').is_installed
+    assert Package('uwsgi-plugin-python3').is_installed

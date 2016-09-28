@@ -2,3 +2,10 @@
 
 # Main tasks file for uwsgi role
 
+- include: 'install_debian.yml'
+  when:
+    - "{{ (ansible_os_family | lower) == 'debian' }}"
+    - "{{ uwsgi_install_mode == 'package' }}"
+  tags:
+    - 'uwsgi::role'
+    - 'uwsgi::install'

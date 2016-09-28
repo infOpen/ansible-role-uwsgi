@@ -2,3 +2,11 @@
 
 # Defaults vars file for uwsgi role
 
+# Installation vars
+uwsgi_install_mode: 'package'
+uwsgi_package_state: 'latest'
+uwsgi_packages:
+  - 'uwsgi'
+  - 'uwsgi-plugin-python'
+  - 'uwsgi-plugin-python3'
+uwsgi_service_name: 'uwsgi'
