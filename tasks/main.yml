@@ -9,3 +9,9 @@
   tags:
     - 'uwsgi::role'
     - 'uwsgi::install'
+
+
+- include: 'configure.yml'
+  tags:
+    - 'uwsgi::role'
+    - 'uwsgi::install'

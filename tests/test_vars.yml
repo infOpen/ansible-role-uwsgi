@@ -1,0 +1,22 @@
+---
+
+uwsgi_test_app:
+  dest: '/home/bar/foobar.py'
+uwsgi_apps:
+  - name: 'foo'
+    enabled: True
+    settings:
+      uwsgi:
+        uid: 'bar'
+        gid: 'bar'
+        'immediate-uid': 'bar'
+        'immediate-gid': 'bar'
+        env:
+          - 'PATH=/home/bar/foobar'
+        chdir: '/run/uwsgi/app/foo'
+        'log-master': True
+        logto: "{{ uwsgi_configuration_log_path ~ '/foo-wsgi.log' }}"
+        'http-socket': '/run/uwsgi/app/foo/socket'
+        'chmod-socket': 666
+        'chown-socket': 'bar:bar'
+        plugin: 'python'
