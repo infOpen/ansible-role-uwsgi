@@ -14,4 +14,4 @@
 - include: 'configure.yml'
   tags:
     - 'uwsgi::role'
-    - 'uwsgi::install'
+    - 'uwsgi::config'
