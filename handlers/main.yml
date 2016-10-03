@@ -1,0 +1,9 @@
+---
+
+# Handlers main file for uwsgi role
+
+- name: 'Restart uwsgi'
+  become: True
+  service:
+    name: "{{ uwsgi_service_name }}"
+    state: 'restarted'
