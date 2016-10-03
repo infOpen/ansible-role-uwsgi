@@ -1,0 +1,25 @@
+---
+
+# All tasks about uwsgi configuration
+
+- name: 'Create configuration files'
+  become: True
+  template:
+    src: 'app.yaml.j2'
+    dest: "{{ uwsgi_configuration_available_path }}/{{ item.name }}.yaml"
+    owner: "{{ uwsgi_configuration_owner }}"
+    group: "{{ uwsgi_configuration_group }}"
+    mode: "{{ uwsgi_configuration_mode }}"
+  notify: 'Restart uwsgi'
+  with_items: "{{ uwsgi_apps }}"
+
+
+- name: 'Activate needed applications'
+  become: True
+  file:
+    src: "{{ uwsgi_configuration_available_path }}/{{ item.name }}.yaml"
+    dest: "{{ uwsgi_configuration_enabled_path }}/{{ item.name }}.yaml"
+    state: 'link'
+  notify: 'Restart uwsgi'
+  when: "{{ item.enabled | default(False) }}"
+  with_items: "{{ uwsgi_apps }}"
