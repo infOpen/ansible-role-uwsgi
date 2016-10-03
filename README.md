@@ -47,6 +47,37 @@ make test-vagrant
 ### Default role variables
 
 ``` yaml
+# Installation vars
+uwsgi_install_mode: 'package'
+uwsgi_package_state: 'latest'
+uwsgi_packages:
+  - 'uwsgi'
+  - 'uwsgi-plugin-python'
+  - 'uwsgi-plugin-python3'
+uwsgi_service_name: 'uwsgi'
+
+# Configuration vars
+uwsgi_configuration_available_path: '/etc/uwsgi/apps-available'
+uwsgi_configuration_enabled_path: '/etc/uwsgi/apps-enabled'
+uwsgi_configuration_log_path: '/var/log/uwsgi'
+uwsgi_configuration_run_path: '/var/run/uwsgi'
+uwsgi_configuration_owner: 'root'
+uwsgi_configuration_group: 'root'
+uwsgi_configuration_mode: '0640'
+uwsgi_apps: []
+uwsgi_apps_defaults:
+  uwsgi:
+    autoload: true
+    master: true
+    workers: 2
+    no-orphans: true
+    pidfile: "{{ uwsgi_configuration_run_path ~ '/%(deb-confnamespace)/%(deb-confname)/pid' }}"
+    socket: "{{ uwsgi_configuration_run_path ~ '/%(deb-confnamespace)/%(deb-confname)/socket' }}"
+    logto: "{{ uwsgi_configuration_log_path ~ '/%(deb-confnamespace)/%(debconfname).log' }}"
+    chmod-socket: 660
+    log-date: true
+    uid: www-data
+    gid: www-data
 ```
 
 ## Dependencies
@@ -57,7 +88,7 @@ None
 
     - hosts: servers
       roles:
-         - { role: achaussier.uwsgi }
+         - { role: infOpen.uwsgi }
 
 ## License
 
@@ -68,4 +99,3 @@ MIT
 Alexandre Chaussier (for Infopen company)
 - http://www.infopen.pro
 - a.chaussier [at] infopen.pro
-
