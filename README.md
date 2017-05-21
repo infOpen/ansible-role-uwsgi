@@ -1,6 +1,10 @@
 # uwsgi
 
-[![Build Status](https://travis-ci.org/infOpen/ansible-role-uwsgi.svg?branch=master)](https://travis-ci.org/infOpen/ansible-role-uwsgi)
+[![Build Status](https://img.shields.io/travis/infOpen/ansible-role-uwsgi/master.svg?label=travis_master)](https://travis-ci.org/infOpen/ansible-role-uwsgi)
+[![Build Status](https://img.shields.io/travis/infOpen/ansible-role-uwsgi/develop.svg?label=travis_develop)](https://travis-ci.org/infOpen/ansible-role-uwsgi)
+[![Updates](https://pyup.io/repos/github/infOpen/ansible-role-uwsgi/shield.svg)](https://pyup.io/repos/github/infOpen/ansible-role-uwsgi/)
+[![Python 3](https://pyup.io/repos/github/infOpen/ansible-role-uwsgi/python-3-shield.svg)](https://pyup.io/repos/github/infOpen/ansible-role-uwsgi/)
+[![Ansible Role](https://img.shields.io/ansible/role/12481.svg)](https://galaxy.ansible.com/infOpen/uwsgi/)
 
 Install uwsgi package.
 
@@ -11,35 +15,34 @@ and platform requirements are listed in the metadata file.
 
 ## Testing
 
-This role has some testing methods.
+This role use [Molecule](https://github.com/metacloud/molecule/) to run tests.
 
-To use locally testing methods, you need to install Docker and/or Vagrant and Python requirements:
+Locally, you can run tests on Docker (default driver) or Vagrant.
+Travis run tests using Docker driver only.
 
-* Create and activate a virtualenv
-* Install requirements
+Currently, tests are done on:
+- Debian Jessie
+- Ubuntu Trusty
+- Ubuntu Xenial
 
-```
-pip install -r requirements_dev.txt
-```
+and use:
+- Ansible 2.0.x
+- Ansible 2.1.x
+- Ansible 2.2.x
+- Ansible 2.3.x
 
-### Automatically with Travis
+### Running tests
 
-Tests runs automatically on Travis on push, release, pr, ... using docker testing containers
-
-### Locally with Docker
-
-You can use Docker to run tests on ephemeral containers.
-
-```
-make test-docker
-```
-
-### Locally with Vagrant
-
-You can use Vagrant to run tests on virtual machines.
+#### Using Docker driver
 
 ```
-make test-vagrant
+$ tox
+```
+
+#### Using Vagrant driver
+
+```
+$ MOLECULE_DRIVER=vagrant tox
 ```
 
 ## Role Variables
@@ -49,23 +52,48 @@ make test-vagrant
 ``` yaml
 # Installation vars
 uwsgi_install_mode: 'package'
-uwsgi_package_state: 'latest'
-uwsgi_packages:
-  - 'uwsgi'
-  - 'uwsgi-plugin-python'
-  - 'uwsgi-plugin-python3'
+uwsgi_packages: "{{ _uwsgi_packages }}"
 uwsgi_service_name: 'uwsgi'
 
 # Configuration vars
-uwsgi_configuration_available_path: '/etc/uwsgi/apps-available'
-uwsgi_configuration_enabled_path: '/etc/uwsgi/apps-enabled'
-uwsgi_configuration_log_path: '/var/log/uwsgi'
-uwsgi_configuration_run_path: '/var/run/uwsgi'
+uwsgi_configuration_available_path: "{{ _uwsgi_configuration_available_path }}"
+uwsgi_configuration_enabled_path: "{{ _uwsgi_configuration_enabled_path }}"
+uwsgi_configuration_log_path: "{{ _uwsgi_configuration_log_path }}"
+uwsgi_configuration_run_path: "{{ _uwsgi_configuration_run_path }}"
 uwsgi_configuration_owner: 'root'
 uwsgi_configuration_group: 'root'
 uwsgi_configuration_mode: '0640'
 uwsgi_apps: []
 uwsgi_apps_defaults:
+  uwsgi:
+    autoload: true
+    master: true
+    workers: 2
+    no-orphans: true
+    pidfile: "{{ uwsgi_configuration_run_path ~ '/%(deb-confnamespace)/%(deb-confname)/pid' }}"
+    socket: "{{ uwsgi_configuration_run_path ~ '/%(deb-confnamespace)/%(deb-confname)/socket' }}"
+    logto: "{{ uwsgi_configuration_log_path ~ '/%(deb-confnamespace)/%(debconfname).log' }}"
+    chmod-socket: 660
+    log-date: true
+    uid: www-data
+    gid: www-data
+```
+
+### Debian family variables
+
+``` yaml
+# Package management
+_uwsgi_packages:
+  - name: 'uwsgi'
+  - name: 'uwsgi-plugin-python'
+  - name: 'uwsgi-plugin-python3'
+
+# Configuration management
+_uwsgi_configuration_available_path: '/etc/uwsgi/apps-available'
+_uwsgi_configuration_enabled_path: '/etc/uwsgi/apps-enabled'
+_uwsgi_configuration_log_path: '/var/log/uwsgi'
+_uwsgi_configuration_run_path: '/var/run/uwsgi'
+_uwsgi_apps_defaults:
   uwsgi:
     autoload: true
     master: true
@@ -86,9 +114,11 @@ None
 
 ## Example Playbook
 
-    - hosts: servers
-      roles:
-         - { role: infOpen.uwsgi }
+``` yaml
+- hosts: servers
+  roles:
+    - { role: infOpen.uwsgi }
+```
 
 ## License
 

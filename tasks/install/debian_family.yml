@@ -1,12 +1,10 @@
 ---
 
 - name: 'Install uwsgi packages'
-  become: True
   apt:
-    name: "{{ item }}"
-    state: "{{ uwsgi_package_state }}"
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
     update_cache: True
     cache_valid_time: 3600
   with_items: "{{ uwsgi_packages }}"
-  notify:
-    - 'Restart uwsgi'
+  notify: 'HANDLER | Restart uwsgi'

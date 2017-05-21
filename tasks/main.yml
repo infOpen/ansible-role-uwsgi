@@ -2,16 +2,24 @@
 
 # Main tasks file for uwsgi role
 
-- include: 'install_debian.yml'
-  when:
-    - "{{ (ansible_os_family | lower) == 'debian' }}"
-    - "{{ uwsgi_install_mode == 'package' }}"
+- name: 'INIT | Manage variables to use for our target'
+  include: "{{ role_path }}/tasks/manage_variables.yml"
   tags:
-    - 'uwsgi::role'
-    - 'uwsgi::install'
+    - 'role::uwsgi'
+    - 'role::uwsgi::init'
 
 
-- include: 'configure.yml'
+- name: 'INSTALL | Manage installation tasks for OS family'
+  include: "{{ role_path }}/tasks/install/{{ ansible_os_family | lower }}_family.yml"
+  become: True
+  when: "uwsgi_install_mode == 'package'"
   tags:
-    - 'uwsgi::role'
-    - 'uwsgi::config'
+    - 'role::uwsgi'
+    - 'role::uwsgi::install'
+
+
+- name: 'CONFIG | Manage configuration tasks'
+  include: "{{ role_path }}/tasks/configure.yml"
+  tags:
+    - 'role::uwsgi'
+    - 'role::uwsgi::config'
