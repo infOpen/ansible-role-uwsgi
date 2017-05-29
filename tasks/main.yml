@@ -20,6 +20,7 @@
 
 - name: 'CONFIG | Manage configuration tasks'
   include: "{{ role_path }}/tasks/configure.yml"
+  become: True
   tags:
     - 'role::uwsgi'
     - 'role::uwsgi::config'
