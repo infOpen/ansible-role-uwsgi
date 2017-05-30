@@ -19,5 +19,5 @@
     dest: "{{ uwsgi_configuration_enabled_path }}/{{ item.name }}.yaml"
     state: 'link'
   notify: 'HANDLER | Restart uwsgi'
-  when: "{{ item.enabled | default(False) }}"
+  when: "item.enabled | default(False)"
   with_items: "{{ uwsgi_apps }}"
