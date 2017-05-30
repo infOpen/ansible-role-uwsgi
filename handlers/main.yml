@@ -7,6 +7,19 @@
   service:
     name: "{{ uwsgi_service_name }}"
     state: 'restarted'
+  when: 'uwsgi_check_app_enabled.matched < uwsgi_check_app_enabled.examined'
+  tags:
+    - 'role::uwsgi'
+    - 'role::uwsgi::config'
+    - 'role::uwsgi::install'
+
+
+- name: 'HANDLER | Stop uwsgi'
+  become: True
+  service:
+    name: "{{ uwsgi_service_name }}"
+    state: 'stopped'
+  when: 'uwsgi_check_app_enabled.matched == uwsgi_check_app_enabled.examined'
   tags:
     - 'role::uwsgi'
     - 'role::uwsgi::config'

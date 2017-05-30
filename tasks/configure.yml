@@ -3,7 +3,6 @@
 # All tasks about uwsgi configuration
 
 - name: 'CONFIG | Create configuration files'
-  become: True
   template:
     src: "{{ role_path }}/templates/app.yaml.j2"
     dest: "{{ uwsgi_configuration_available_path }}/{{ item.name }}.yaml"
@@ -15,11 +14,10 @@
 
 
 - name: 'CONFIG | Activate needed applications'
-  become: True
   file:
     src: "{{ uwsgi_configuration_available_path }}/{{ item.name }}.yaml"
     dest: "{{ uwsgi_configuration_enabled_path }}/{{ item.name }}.yaml"
     state: 'link'
   notify: 'HANDLER | Restart uwsgi'
-  when: "{{ item.enabled | default(False) }}"
+  when: "item.enabled | default(False)"
   with_items: "{{ uwsgi_apps }}"

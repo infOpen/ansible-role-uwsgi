@@ -20,6 +20,20 @@
 
 - name: 'CONFIG | Manage configuration tasks'
   include: "{{ role_path }}/tasks/configure.yml"
+  become: True
   tags:
     - 'role::uwsgi'
     - 'role::uwsgi::config'
+
+
+- name: 'CHECK | Get enabled applications count'
+  become: True
+  find:
+    paths: "{{ uwsgi_configuration_enabled_path }}"
+    patterns: 'README'
+  register: 'uwsgi_check_app_enabled'
+  notify: 'HANDLER | Stop uwsgi'
+  tags:
+    - 'role::uwsgi'
+    - 'role::uwsgi::config'
+    - 'role::uwsgi::install'
