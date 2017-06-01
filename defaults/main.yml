@@ -17,3 +17,6 @@ uwsgi_configuration_group: 'root'
 uwsgi_configuration_mode: '0640'
 uwsgi_apps: []
 uwsgi_apps_defaults: "{{ _uwsgi_apps_defaults }}"
+
+# Handler management
+uwsgi_restart_handler_enabled: True
