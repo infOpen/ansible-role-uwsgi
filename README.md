@@ -64,19 +64,10 @@ uwsgi_configuration_owner: 'root'
 uwsgi_configuration_group: 'root'
 uwsgi_configuration_mode: '0640'
 uwsgi_apps: []
-uwsgi_apps_defaults:
-  uwsgi:
-    autoload: true
-    master: true
-    workers: 2
-    no-orphans: true
-    pidfile: "{{ uwsgi_configuration_run_path ~ '/%(deb-confnamespace)/%(deb-confname)/pid' }}"
-    socket: "{{ uwsgi_configuration_run_path ~ '/%(deb-confnamespace)/%(deb-confname)/socket' }}"
-    logto: "{{ uwsgi_configuration_log_path ~ '/%(deb-confnamespace)/%(debconfname).log' }}"
-    chmod-socket: 660
-    log-date: true
-    uid: www-data
-    gid: www-data
+uwsgi_apps_defaults: "{{ _uwsgi_apps_defaults }}"
+
+# Handler management
+uwsgi_restart_handler_enabled: True
 ```
 
 ### Debian family variables

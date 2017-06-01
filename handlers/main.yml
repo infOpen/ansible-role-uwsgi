@@ -7,7 +7,9 @@
   service:
     name: "{{ uwsgi_service_name }}"
     state: 'restarted'
-  when: 'uwsgi_check_app_enabled.matched < uwsgi_check_app_enabled.examined'
+  when:
+    - 'uwsgi_check_app_enabled.matched < uwsgi_check_app_enabled.examined'
+    - 'uwsgi_restart_handler_enabled | bool'
   tags:
     - 'role::uwsgi'
     - 'role::uwsgi::config'
