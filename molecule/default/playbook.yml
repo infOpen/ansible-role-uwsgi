@@ -2,8 +2,8 @@
 
 # Role tests
 
-- hosts: 'uwsgi-vagrant-xenial:uwsgi-docker-xenial'
-  name: 'Install tests prerequisites'
+- name: 'Converge | Prerequisites tasks'
+  hosts: 'uwsgi-docker-xenial'
   gather_facts: False
   tasks:
     - name: 'PREREQUISITES | APT | Do an apt-get update'
@@ -16,7 +16,8 @@
       changed_when: False
 
 
-- hosts: 'all'
+- name: 'Converge | Main tasks'
+  hosts: 'all'
   pre_tasks:
     - block:
         - name: 'Create test application user'
@@ -56,8 +57,8 @@
             src: "{{ item }}"
             dest: '/home/foobar/app'
           with_items:
-            - 'requirements.txt'
-            - 'foo.py'
+            - 'files/requirements.txt'
+            - 'files/foo.py'
           changed_when: False
         - name: 'Install test python dependencies'
           become: True
@@ -84,6 +85,4 @@
       become: True
       when: "ansible_os_family | lower == 'debian'"
   roles:
-    - role: "{{ role_name }}"
-  vars:
-    role_name: "{{ playbook_dir | basename }}"
+    - role: "ansible-role-uwsgi"
